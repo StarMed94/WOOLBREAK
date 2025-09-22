@@ -7,17 +7,6 @@ const Hero: React.FC = () => {
     <section className="bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 lg:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          {/* Badge */}
-          <motion.div 
-            className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Zap className="w-4 h-4 mr-2" />
-            Nouveau : Support étendu pour toutes les langues de programmation
-          </motion.div>
-
           {/* Main Heading */}
           <motion.h1 
             className="text-5xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight"

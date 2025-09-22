@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { X, Settings } from 'lucide-react'
+import { X, Settings, UploadCloud, Loader2 } from 'lucide-react'
+import { v4 as uuidv4 } from 'uuid'
+import toast from 'react-hot-toast'
 import { Block } from './types'
 import { useTheme } from './ThemeContext'
+import { supabase } from '../../lib/supabase'
 
 interface PropertiesPanelProps {
   block: Block
@@ -16,9 +19,60 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   onDeleteBlock
 }) => {
   const { theme } = useTheme();
+  const [isUploading, setIsUploading] = useState(false);
 
   const updateProp = (key: string, value: any) => {
     onUpdateProps(block.id, { [key]: value })
+  }
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+    setIsUploading(true);
+
+    // 1. Show local preview immediately
+    const localUrl = URL.createObjectURL(file);
+    updateProp('src', localUrl);
+
+    // 2. Check for Supabase connection and attempt upload
+    const isSupabaseConnected = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_URL.includes('supabase.co') && import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    if (!isSupabaseConnected) {
+        toast.loading('Simulation du téléversement...');
+        setTimeout(() => {
+            toast.dismiss();
+            toast.error(
+                "Connectez un projet Supabase pour sauvegarder l'image.", 
+                { id: 'supabase-connect-error', duration: 6000 }
+            );
+            toast(
+                "L'image est une prévisualisation locale et ne sera pas publiée.",
+                { icon: 'ℹ️', duration: 6000 }
+            );
+            setIsUploading(false);
+        }, 1500);
+        return;
+    }
+
+    // This code will run if Supabase is connected
+    toast.loading('Téléversement de l\'image...');
+    const fileName = `${uuidv4()}-${file.name}`;
+    const { data, error } = await supabase.storage
+        .from('images') // Bucket name
+        .upload(fileName, file);
+
+    toast.dismiss();
+
+    if (error) {
+        toast.error(`Erreur de téléversement : ${error.message}`);
+    } else {
+        const { data: { publicUrl } } = supabase.storage
+            .from('images')
+            .getPublicUrl(data.path);
+        
+        updateProp('src', publicUrl);
+        toast.success('Image téléversée avec succès !');
+    }
+    setIsUploading(false);
   }
 
   const renderPropertiesForType = () => {
@@ -95,11 +149,38 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-text-secondary mb-2">
-                URL de l'image
+                Téléverser une image
+              </label>
+              <label className="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-background border-2 border-gray-300/20 border-dashed rounded-lg cursor-pointer hover:border-primary">
+                {isUploading ? (
+                  <div className="flex flex-col items-center justify-center">
+                    <Loader2 className="w-8 h-8 mb-3 text-text-secondary animate-spin" />
+                    <p className="text-sm text-text-secondary">Téléversement...</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
+                    <UploadCloud className="w-8 h-8 mb-3 text-text-secondary" />
+                    <p className="mb-2 text-sm text-text-secondary">
+                      <span className="font-semibold">Cliquez</span> ou glissez-déposez
+                    </p>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/png, image/jpeg, image/gif, image/webp"
+                  onChange={(e) => e.target.files && handleImageUpload(e.target.files[0])}
+                  disabled={isUploading}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-text-secondary mb-2">
+                Ou utiliser une URL
               </label>
               <input
                 type="url"
-                value={block.props.src}
+                value={block.props.src.startsWith('blob:') ? '' : block.props.src}
                 onChange={(e) => updateProp('src', e.target.value)}
                 className="w-full p-2 border border-gray-300/20 rounded bg-surface"
                 placeholder="https://example.com/image.jpg"

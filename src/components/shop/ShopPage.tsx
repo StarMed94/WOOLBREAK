@@ -8,17 +8,21 @@ import ProductCard from './ProductCard';
 import { Product } from './types';
 import { ThemeProvider } from '../editor/ThemeContext';
 import { Filter, Search } from 'lucide-react';
+import ProductDetailModal from './ProductDetailModal';
 
 const generateProducts = (count: number): Product[] => {
   const products: Product[] = [];
   for (let i = 0; i < count; i++) {
+    const seed = faker.string.uuid();
+    const gallery = Array.from({ length: 3 }, () => `https://picsum.photos/seed/${faker.string.uuid()}/800/600`);
     products.push({
       id: faker.string.uuid(),
       name: faker.commerce.productName(),
       price: parseFloat(faker.commerce.price()),
       description: faker.commerce.productDescription(),
-      imageUrl: `https://picsum.photos/seed/${faker.string.uuid()}/400/300`,
+      imageUrl: `https://picsum.photos/seed/${seed}/400/300`,
       category: faker.commerce.department(),
+      gallery: [`https://picsum.photos/seed/${seed}/800/600`, ...gallery]
     });
   }
   return products;
@@ -31,6 +35,7 @@ const ShopPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const uniqueCategories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
@@ -108,13 +113,18 @@ const ShopPage: React.FC = () => {
               animate="show"
             >
               {filteredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} onCardClick={() => setSelectedProduct(product)} />
               ))}
             </motion.div>
           </div>
         </main>
         <Footer />
         <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+        <ProductDetailModal 
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          product={selectedProduct}
+        />
       </div>
     </ThemeProvider>
   );

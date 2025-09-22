@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
 import { CartProvider } from './contexts/CartContext'
 import Header from './components/Header'
@@ -7,16 +7,20 @@ import Features from './components/Features'
 import ApiSection from './components/ApiSection'
 import UseCases from './components/UseCases'
 import Footer from './components/Footer'
-import EditorPage from './components/EditorPage'
-import ShopPage from './components/shop/ShopPage'
-import CheckoutPage from './components/shop/CheckoutPage'
-import AuthPage from './pages/AuthPage'
-import DataSourcesPage from './pages/DataSourcesPage'
-import AdminPage from './pages/AdminPage'
-import AdminRoute from './components/admin/AdminRoute'
-import ApiDocsPage from './pages/ApiDocsPage'
 import { ShoppingBag } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
+import AppLogoSpinner from './components/common/AppLogoSpinner'
+import AdminRoute from './components/admin/AdminRoute'
+import FloatingHomeButton from './components/common/FloatingHomeButton'
+
+// Lazy load page components
+const EditorPage = lazy(() => import('./components/EditorPage'))
+const ShopPage = lazy(() => import('./components/shop/ShopPage'))
+const CheckoutPage = lazy(() => import('./components/shop/CheckoutPage'))
+const AuthPage = lazy(() => import('./pages/AuthPage'))
+const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage'))
+const AdminPage = lazy(() => import('./pages/AdminPage'))
+const ApiDocsPage = lazy(() => import('./pages/ApiDocsPage'))
 
 function LandingPage() {
   const navigate = useNavigate()
@@ -68,20 +72,23 @@ function App() {
             },
           }}
         />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/editor" element={<EditorPage />} />
-          <Route path="/shop" element={<ShopPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/data-sources" element={<DataSourcesPage />} />
-          <Route path="/api-docs" element={<ApiDocsPage />} />
-          <Route path="/admin/*" element={
-            <AdminRoute>
-              <AdminPage />
-            </AdminRoute>
-          } />
-        </Routes>
+        <FloatingHomeButton />
+        <Suspense fallback={<AppLogoSpinner />}>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/editor" element={<EditorPage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/data-sources" element={<DataSourcesPage />} />
+            <Route path="/api-docs" element={<ApiDocsPage />} />
+            <Route path="/admin/*" element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            } />
+          </Routes>
+        </Suspense>
       </Router>
     </CartProvider>
   )
