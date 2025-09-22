@@ -44,7 +44,7 @@ const VisualEditor: React.FC = () => {
       case 'heading':
         return { content: 'Titre principal', fontSize: 32, fontWeight: 'bold', level: 'h1' }
       case 'image':
-        return { src: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300', alt: 'Image', width: 400, height: 300 }
+        return { src: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300', alt: 'Image', width: 400, height: 300 }
       case 'button':
         return { text: 'Bouton', padding: '12px 24px', borderRadius: '8px' }
       case 'container':

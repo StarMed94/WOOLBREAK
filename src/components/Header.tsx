@@ -56,12 +56,12 @@ const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
 
   const AuthButtons: React.FC = () => (
     <>
-      <button onClick={() => navigate('/auth')} className="text-gray-700 hover:text-blue-600 transition-colors">
+      <button onClick={() => navigate('/auth')} className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
         Connexion
       </button>
       <motion.button 
         onClick={() => navigate('/auth')}
-        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200"
+        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200 font-medium"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -71,27 +71,27 @@ const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
   )
   
   const MobileAuthButtons: React.FC = () => (
-    <>
-      <button onClick={() => { navigate('/auth'); setIsMenuOpen(false); }} className="w-full text-left text-gray-700 hover:text-blue-600 transition-colors mb-2">
+    <div className="space-y-4">
+      <button onClick={() => { navigate('/auth'); setIsMenuOpen(false); }} className="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
         Connexion
       </button>
-      <button onClick={() => { navigate('/auth'); setIsMenuOpen(false); }} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg">
+      <button onClick={() => { navigate('/auth'); setIsMenuOpen(false); }} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold">
         Essai gratuit
       </button>
-    </>
+    </div>
   )
 
   const MobileUserMenu: React.FC = () => (
-    <>
-      <div className="px-4 py-3 border-b border-t">
+    <div className="space-y-4">
+      <div className="px-4 py-3 border rounded-lg border-gray-200">
         <p className="font-semibold text-sm truncate">{profile?.username || 'Utilisateur'}</p>
         <p className="text-xs text-gray-500 capitalize">{profile?.role}</p>
       </div>
-       <a href="/data-sources" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+       <a href="/data-sources" className="block p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
         Sources de données
       </a>
       {isAdmin && (
-        <a href="/admin" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+        <a href="/admin" className="block p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
             Administration
         </a>
       )}
@@ -100,53 +100,56 @@ const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           await signOut();
           setIsMenuOpen(false);
         }} 
-        className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+        className="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center space-x-2"
       >
         <LogOut className="w-4 h-4" />
         <span>Déconnexion</span>
       </button>
-    </>
+    </div>
   )
 
   return (
     <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <motion.div 
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-2"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Code className="w-6 h-6 text-white" />
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <Code className="w-5 h-5 text-white" />
             </div>
-            <a href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <a href="/" className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Woolbrick
             </a>
           </motion.div>
 
           {/* Navigation Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="/#fonctionnalites" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <a href="/#fonctionnalites" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
               Fonctionnalités
             </a>
-            <a href="/api-docs" className="text-gray-700 hover:text-blue-600 transition-colors flex items-center space-x-2">
+            <a href="/api-docs" className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
               <BookOpen className="w-4 h-4" />
               <span>API Docs</span>
             </a>
             {user && (
-              <a href="/data-sources" className="text-gray-700 hover:text-blue-600 transition-colors flex items-center space-x-2">
+              <a href="/data-sources" className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 <Database className="w-4 h-4" />
                 <span>Données</span>
               </a>
             )}
-            <a href="/shop" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <a href="/shop" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
               Boutique
             </a>
-            <a href="/#tarifs" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <a href="/#tarifs" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
               Tarifs
+            </a>
+            <a href="/" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+              Accueil
             </a>
           </nav>
 
@@ -182,22 +185,25 @@ const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
           >
-            <div className="flex flex-col space-y-4">
-              <a href="/#fonctionnalites" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <div className="flex flex-col space-y-2">
+              <a href="/#fonctionnalites" className="block p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                 Fonctionnalités
               </a>
-              <a href="/api-docs" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <a href="/api-docs" className="block p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                 API Docs
               </a>
-              <a href="/shop" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <a href="/shop" className="block p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                 Boutique
               </a>
-              <a href="/#tarifs" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <a href="/#tarifs" className="block p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                 Tarifs
               </a>
-              <div className="pt-4 border-t border-gray-200">
+              <a href="/" className="block p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                Accueil
+              </a>
+              <div className="pt-4 border-t border-gray-200 space-y-4">
                 {onCartClick && (
-                  <button onClick={() => { onCartClick(); setIsMenuOpen(false); }} className="w-full text-left flex justify-between items-center text-gray-700 hover:text-blue-600 transition-colors mb-2">
+                  <button onClick={() => { onCartClick(); setIsMenuOpen(false); }} className="w-full text-left flex justify-between items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                     <span>Panier</span>
                     {totalItems > 0 && (
                       <span className="h-6 w-6 flex items-center justify-center rounded-full bg-primary text-white text-xs">
